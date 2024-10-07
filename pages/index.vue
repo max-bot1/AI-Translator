@@ -1,71 +1,86 @@
 <script lang="ts" setup>
 import '~/assets/css/main.css'
 
-	const messages = ref([
-		{
-			role: 'AI',
-			content: 'Hello! What can I translate for you?',
+const messages = ref([
+  {
+    role: 'AI',
+    content: 'Hello! What can I translate for you?',
+    language: ""
+  }
+]);
+const loading = ref(false);
+const message = ref('');
+const language = ref('');
+
+const scrollToEnd = () => {
+  setTimeout(() => {
+    const chatMessages = document.querySelector('.chat-messages > div:last-child');
+    chatMessages?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+  }, 100);
+};
+
+const sendPrompt = async () => {
+  if (message.value === '') {
+    return;
+  };
+  loading.value = true;
+
+  messages.value.push({
+    role: 'user',
+    content: message.value,
+    language: language.value
+  });
+
+  scrollToEnd();
+  message.value = '';
+
+  const res = await fetch(`/api/chat`, {
+    body: JSON.stringify(messages.value.slice(1)),
+    method: 'post'
+  });
+
+  if (res.status === 200) {
+    const response = await res.json();
+    messages.value.push({
+      role: 'AI',
+      content: response?.message,
+      language: response?.language
+    });
+  } else {
+    messages.value.push({
+      role: 'AI',
+      content: res.statusText,
       language: ""
-		}
-	]);
-	const loading = ref(false);
-	const message = ref('');
-  const language = ref('');
+    });
+  }
 
-	const scrollToEnd = () => {
-		setTimeout(() => {
-			const chatMessages = document.querySelector('.chat-messages > div:last-child');
-			chatMessages?.scrollIntoView({ behavior: 'smooth', block: 'end' });
-		}, 100);
-	};
+  loading.value = false;
+  scrollToEnd();
+};
 
-	const sendPrompt = async () => {
-		if (message.value === '') {
-      return;
-    };
-		loading.value = true;
-
-		messages.value.push({
-			role: 'user',
-			content: message.value,
-      language: language.value
-		});
-
-		scrollToEnd();
-		message.value = '';
-    
-		const res = await fetch(`/api/chat`, {
-			body: JSON.stringify(messages.value.slice(1)),
-			method: 'post'
-		});
-
-		if (res.status === 200) {
-			const response = await res.json();
-			messages.value.push({
-				role: 'AI',
-				content: response?.message,
-        language: response?.language
-			});
-		} else {
-			messages.value.push({
-				role: 'AI',
-				content: res.statusText,
-        language: ""
-			});
-		}
-
-		loading.value = false;
-		scrollToEnd();
-	};
+const colorMode = useColorMode()
+const isDark = computed({
+  get() {
+    return colorMode.value === "dark"
+  },
+  set() {
+    colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
+  }
+})
 </script>
 
 <template>
   <UCard>
     <template #header>
+      <UButton :icon="isDark ? 'i-heroicons-moon-20-solid' : 'i-heroicons-sun-20-solid'" color="gray" variant="ghost"
+        aria-label="Theme" @click="isDark = !isDark" />
       <h2 style="display: flex; justify-content: center;">
         <strong> AI Translator </strong>
       </h2>
-      <h1 style="display: flex; justify-content: center;">This is a translator that leverages OpenAI. It allows you to translate any given input to one of the languages that is officially supported by OpenAi. Just select any language from the dropdown, type in a phrase and translate. Enjoy! </h1>
+
+      <h1 style="display: flex; justify-content: center;">This is a translator that leverages OpenAI. It allows you to
+        translate any given input to one of the languages that is officially supported by OpenAi. Just select any
+        language from the dropdown, type in a phrase and translate. Enjoy! </h1>
     </template>
 
     <UContainer style="width: auto;" class="roundedContainer">
@@ -89,7 +104,7 @@ import '~/assets/css/main.css'
     <template #footer>
       <USelect icon="i-heroicons-magnifying-glass-20-solid" color="white" style="padding-top: 10px;" size="sm"
         :model-value="language" @update:model-value="value => language = value"
-        :options="['Albanian', 'Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bosnian', 'Bulgarian', 'Catalan', 'Croatian', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 'Italian', 'Japanese', 'Kannada', 'Kazakh', 'Latvian', 'Lithuanian', 'Macedonian', 'Malay', 'Malayalam', 'Mandarin Chinese', 'Marathi', 'Mongolian', 'Norwegian', 'Persian (Farsi)', 'Polish', 'Portuguese', 'Punjabi', 'Romanian', 'Russian', 'Serbian', 'Slovak', 'Slovenian', 'Somali', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Telugu', 'Thai', 'Turkish', 'Ukrainian', 'Urdu', 'Vietnamese']" 
+        :options="['Albanian', 'Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bosnian', 'Bulgarian', 'Catalan', 'Croatian', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 'Italian', 'Japanese', 'Kannada', 'Kazakh', 'Latvian', 'Lithuanian', 'Macedonian', 'Malay', 'Malayalam', 'Mandarin Chinese', 'Marathi', 'Mongolian', 'Norwegian', 'Persian (Farsi)', 'Polish', 'Portuguese', 'Punjabi', 'Romanian', 'Russian', 'Serbian', 'Slovak', 'Slovenian', 'Somali', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Telugu', 'Thai', 'Turkish', 'Ukrainian', 'Urdu', 'Vietnamese']"
         placeholder="Translate to..." />
       <form class="mt-6 flex gap-1" @submit.prevent="sendPrompt">
         <UInput size="xl" v-model="message" required placeholder="Translate something!" class="flex-1" />
