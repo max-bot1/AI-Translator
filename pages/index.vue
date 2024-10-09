@@ -102,11 +102,11 @@ const isDark = computed({
     </UContainer>
 
     <template #footer>
+      <form class="mt-6 flex gap-1" @submit.prevent="sendPrompt" style="display: flex; align-items: center;">
       <USelect icon="i-heroicons-magnifying-glass-20-solid" color="white" style="padding-top: 10px;" size="sm"
-        :model-value="language" @update:model-value="value => language = value"
+        :model-value="language"  @update:model-value="value => language = value"
         :options="['Albanian', 'Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bosnian', 'Bulgarian', 'Catalan', 'Croatian', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 'Italian', 'Japanese', 'Kannada', 'Kazakh', 'Latvian', 'Lithuanian', 'Macedonian', 'Malay', 'Malayalam', 'Mandarin Chinese', 'Marathi', 'Mongolian', 'Norwegian', 'Persian (Farsi)', 'Polish', 'Portuguese', 'Punjabi', 'Romanian', 'Russian', 'Serbian', 'Slovak', 'Slovenian', 'Somali', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Telugu', 'Thai', 'Turkish', 'Ukrainian', 'Urdu', 'Vietnamese']"
-        placeholder="Translate to..." />
-      <form class="mt-6 flex gap-1" @submit.prevent="sendPrompt">
+        required placeholder="Translate to..." />
         <UInput size="xl" v-model="message" required placeholder="Translate something!" class="flex-1" />
         <uButton size="xl" color="green" :ui="{ rounded: 'rounded-full' }" icon="typcn:pencil" type="submit" />
       </form>
