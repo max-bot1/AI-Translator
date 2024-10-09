@@ -14,7 +14,7 @@ const language = ref('');
 
 const scrollToEnd = () => {
   setTimeout(() => {
-    const chatMessages = document.querySelector('.chat-messages > div:last-child');
+    const chatMessages = document.querySelector('.messages > div:last-child');
     chatMessages?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, 100);
 };
@@ -83,7 +83,7 @@ const isDark = computed({
         language from the dropdown, type in a phrase and translate. Enjoy! </h1>
     </template>
 
-    <UContainer style="width: auto;" class="roundedContainer">
+    <UContainer style="width: auto;" class="roundedContainer messages">
       <div v-for="(message, i) in messages" :key="i" class="flex flex-col p-4">
         <div v-if="message.role === 'AI'" class="pr-8 mr-auto">
           <div class="p-2 mt-1 text-sm text-gray-700 bg-gray-200 rounded-lg text-smp-2">
@@ -102,11 +102,11 @@ const isDark = computed({
     </UContainer>
 
     <template #footer>
+      <form class="mt-6 flex gap-1" @submit.prevent="sendPrompt" style="display: flex; align-items: center;">
       <USelect icon="i-heroicons-magnifying-glass-20-solid" color="white" style="padding-top: 10px;" size="sm"
-        :model-value="language" @update:model-value="value => language = value"
+        :model-value="language"  @update:model-value="value => language = value"
         :options="['Albanian', 'Amharic', 'Arabic', 'Armenian', 'Bengali', 'Bosnian', 'Bulgarian', 'Catalan', 'Croatian', 'Czech', 'Danish', 'Dutch', 'English', 'Estonian', 'Finnish', 'French', 'Georgian', 'German', 'Greek', 'Gujarati', 'Hindi', 'Hungarian', 'Icelandic', 'Indonesian', 'Italian', 'Japanese', 'Kannada', 'Kazakh', 'Latvian', 'Lithuanian', 'Macedonian', 'Malay', 'Malayalam', 'Mandarin Chinese', 'Marathi', 'Mongolian', 'Norwegian', 'Persian (Farsi)', 'Polish', 'Portuguese', 'Punjabi', 'Romanian', 'Russian', 'Serbian', 'Slovak', 'Slovenian', 'Somali', 'Spanish', 'Swahili', 'Swedish', 'Tagalog', 'Tamil', 'Telugu', 'Thai', 'Turkish', 'Ukrainian', 'Urdu', 'Vietnamese']"
-        placeholder="Translate to..." />
-      <form class="mt-6 flex gap-1" @submit.prevent="sendPrompt">
+        required placeholder="Translate to..." />
         <UInput size="xl" v-model="message" required placeholder="Translate something!" class="flex-1" />
         <uButton size="xl" color="green" :ui="{ rounded: 'rounded-full' }" icon="typcn:pencil" type="submit" />
       </form>

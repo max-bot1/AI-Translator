@@ -3,13 +3,10 @@ export default defineEventHandler(async (event) => {
     let prompt = [];
 	const previousMessage = JSON.parse(await readBody(event)).pop();
 
-
-
 	prompt.push({
         role: previousMessage.role,
         content: `Say nothing else, just Translate this to ${previousMessage.language}: ${previousMessage.content}`
     });
-
 
 	const req = await fetch('https://api.openai.com/v1/chat/completions', {
 		method: 'POST',
