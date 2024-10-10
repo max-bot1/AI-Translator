@@ -14,7 +14,7 @@ const language = ref('');
 
 const scrollToEnd = () => {
   setTimeout(() => {
-    const chatMessages = document.querySelector('.chat-messages > div:last-child');
+    const chatMessages = document.querySelector('.messages > div:last-child');
     chatMessages?.scrollIntoView({ behavior: 'smooth', block: 'end' });
   }, 100);
 };
@@ -83,7 +83,7 @@ const isDark = computed({
         language from the dropdown, type in a phrase and translate. Enjoy! </h1>
     </template>
 
-    <UContainer style="width: auto;" class="roundedContainer">
+    <UContainer style="width: auto;" class="roundedContainer messages">
       <div v-for="(message, i) in messages" :key="i" class="flex flex-col p-4">
         <div v-if="message.role === 'AI'" class="pr-8 mr-auto">
           <div class="p-2 mt-1 text-sm text-gray-700 bg-gray-200 rounded-lg text-smp-2">
