@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `Bearer ${config.OPENAI_API_KEY}`
+			Authorization: `Bearer ${config.openaiApiKey}`
 		},
 		body: JSON.stringify({
 			model: 'gpt-4o-mini',

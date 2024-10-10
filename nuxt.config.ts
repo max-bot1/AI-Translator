@@ -5,5 +5,6 @@ export default defineNuxtConfig({
   modules: ['@nuxt/ui'],
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
-		OPENAI_API_KEY: process.env.OPENAI_API_KEY
-	},})
+    openaiApiKey: ''
+  },
+})
